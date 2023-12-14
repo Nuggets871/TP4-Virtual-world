@@ -12,45 +12,41 @@ import javax.swing.tree.DefaultMutableTreeNode;
  *
  * @author adrien.peytavie
  */
-public class Circle {
-    private Point center;
+public class Circle extends Shape{
     private double radius;
-    Color color;
 
     
-    public Circle(Point p, Color c){
-       center = p;
-       radius = 100;
-       color = c;
+    public Circle(Point centre, Color color){
+        super(centre,color);
+       this.radius = 50;
     }
     
-    public Rectangle getBox()
-    {
-        return new Rectangle((int)(center.x), (int)(center.y ), (int)(radius), (int)( radius)); 
-    }
-   
-    public String getType()
-    {
-        return "Circle"; 
+    @Override
+    public Rectangle getBox() {
+        return new Rectangle((int)(centre.x - radius), (int)(centre.y - radius), (int)(2 * radius), (int)(2 * radius));
     }
 
-    public String toString(int padding) {
-        String str = new String();
-        
-        str += getType() + "(" + center +")";
-        
-        return str;
+    @Override
+    public String getType() {
+        return "Circle";
     }
 
+    @Override
+    public DefaultMutableTreeNode getJTreeNodes() {
+        return new DefaultMutableTreeNode(getType() + " (Center[" + centre.x + ", " + centre.y + "], R[" + radius + "])");
+    }
+
+    @Override
     public void draw(Graphics g) {
         g.setColor(color);
-        g.fillOval(center.x,center.y,(int)radius,(int)radius);
+        g.fillOval((int)(centre.x - radius), (int)(centre.y - radius), (int)(2 * radius), (int)(2 * radius));
         g.setColor(Color.black);
-        g.drawOval(center.x,center.y,(int)radius,(int)radius);
+        g.drawOval((int)(centre.x - radius), (int)(centre.y - radius), (int)(2 * radius), (int)(2 * radius));
+            
     }
 
-    public DefaultMutableTreeNode getJTreeNodes() {
- 
-        return new DefaultMutableTreeNode(getType()+ "(Center["+center.x+", "+center.y +"], R["+radius+"]");
+    @Override
+    public String toString(int padding) {
+        return String.format("%" + padding + "sCircle (Center: [%d, %d], Radius: %.1f)", "", centre.x, centre.y, radius);
     }
 }
