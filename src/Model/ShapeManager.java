@@ -26,7 +26,19 @@ public class ShapeManager extends Observable {
     }
     
     public void init() {
-    }
+    Group g1 = new Group(new Point(0, 0), Color.BLACK); // Point et couleur pour le groupe
+    add(g1);
+    g1.add(new Circle(new Point(200, 100), Color.BLUE));
+    g1.add(new Square(new Point(400, 200), Color.RED));
+
+    Group g2 = new Group(new Point(0, 0), Color.BLACK); // Un autre groupe
+    g2.add(new Square(new Point(100, 300), Color.YELLOW));
+    g2.add(new Square(new Point(100, 200), Color.GREEN));
+    add(g2);
+
+    add(new Circle(new Point(20, 200), Color.MAGENTA));
+}
+
 
     
     public void add(Shape shape)

@@ -6,6 +6,8 @@ package View;
 
 
 import Controller.Controller_Add;
+import Model.Group;
+import Model.Shape;
 import Model.ShapeManager;
 import java.awt.Color;
 import java.util.Observable;
@@ -14,6 +16,7 @@ import javax.swing.JColorChooser;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 /**
  *
@@ -111,6 +114,11 @@ public class Window extends javax.swing.JFrame implements Observer {
         jButton_Remove.setText("Remove");
 
         jButton_Group.setText("Group");
+        jButton_Group.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_GroupActionPerformed(evt);
+            }
+        });
 
         jScrollPane1.setViewportView(jTree_Objects);
 
@@ -313,6 +321,41 @@ public class Window extends javax.swing.JFrame implements Observer {
 
     }//GEN-LAST:event_jButtonColorActionPerformed
 
+    private void jButton_GroupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_GroupActionPerformed
+        // Créer un nouveau groupe
+    Group newGroup = new Group();
+
+    // Récupérer les nœuds sélectionnés dans le JTree
+    TreePath[] selectedPaths = jTree_Objects.getSelectionPaths();
+    if (selectedPaths != null) {
+        System.out.println("chemin selectionne");
+        for (TreePath path : selectedPaths) {
+            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+            Object userObject = selectedNode.getUserObject();
+
+            if (userObject instanceof Shape) {
+                // Ajouter la forme au groupe
+                newGroup.add((Shape) userObject);
+            }
+        }
+    }
+
+    // Ajouter le groupe au ShapeManager
+    if (!newGroup.getChildren().isEmpty()) {
+        data.add(newGroup);
+    }
+
+    // Mettre à jour l'affichage
+    updateDisplay();
+    
+    }//GEN-LAST:event_jButton_GroupActionPerformed
+                                          
+    private void updateDisplay() {
+        painter.revalidate();
+        painter.repaint();
+        jTree_Objects.setModel(data.getTreeModel());
+        expandAllNodes(jTree_Objects);
+    }
     @Override
     public void update(Observable o, Object arg) {
         painter.revalidate();
