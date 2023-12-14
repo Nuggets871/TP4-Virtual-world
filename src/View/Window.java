@@ -296,6 +296,12 @@ public class Window extends javax.swing.JFrame implements Observer {
             ca.control("Circle", jButtonColor.getBackground());
             
             jTextPaneInformations.setText("Circle added");
+        }else if (jRadioRectangle.isSelected()){
+            ca.control("Rectangle",jButtonColor.getBackground());
+            jTextPaneInformations.setText("Rectangle added");
+        }else if(jRadioSquare.isSelected()){
+            ca.control("Square", jButtonColor.getBackground());
+            jTextPaneInformations.setText("Square added");
         }
     }//GEN-LAST:event_jButton_AddActionPerformed
 
