@@ -2,6 +2,18 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/chris/Desktop/oui/Cours/BUT/2eme%20annee/Qualite_dev/tp4-virtual-world/src/Model/Square.java</file>
+            <file>file:/C:/Users/chris/Desktop/oui/Cours/BUT/2eme%20annee/Qualite_dev/tp4-virtual-world/src/Model/Circle.java</file>
+            <file>file:/C:/Users/chris/Desktop/oui/Cours/BUT/2eme%20annee/Qualite_dev/tp4-virtual-world/src/Model/Shape.java</file>
+            <file>file:/C:/Users/chris/Desktop/oui/Cours/BUT/2eme%20annee/Qualite_dev/tp4-virtual-world/src/Controller/Controller_Add.java</file>
+            <file>file:/C:/Users/chris/Desktop/oui/Cours/BUT/2eme%20annee/Qualite_dev/tp4-virtual-world/src/tpgraphicseditor/TPGraphicsEditor.java</file>
+            <file>file:/C:/Users/chris/Desktop/oui/Cours/BUT/2eme%20annee/Qualite_dev/tp4-virtual-world/src/Model/Group.java</file>
+            <file>file:/C:/Users/chris/Desktop/oui/Cours/BUT/2eme%20annee/Qualite_dev/tp4-virtual-world/src/Model/RectangleShape.java</file>
+            <file>file:/C:/Users/chris/Desktop/oui/Cours/BUT/2eme%20annee/Qualite_dev/tp4-virtual-world/src/View/GraphicsPainter.java</file>
+            <file>file:/C:/Users/chris/Desktop/oui/Cours/BUT/2eme%20annee/Qualite_dev/tp4-virtual-world/src/Model/ShapeFactory.java</file>
+            <file>file:/C:/Users/chris/Desktop/oui/Cours/BUT/2eme%20annee/Qualite_dev/tp4-virtual-world/src/View/Window.java</file>
+            <file>file:/C:/Users/chris/Desktop/oui/Cours/BUT/2eme%20annee/Qualite_dev/tp4-virtual-world/src/Model/ShapeManager.java</file>
+        </group>
     </open-files>
 </project-private>

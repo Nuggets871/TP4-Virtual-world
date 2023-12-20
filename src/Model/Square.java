@@ -49,4 +49,45 @@ public class Square extends Shape {
     public String toString(int padding) {
         return String.format("%" + padding + "sSquare (Centre: [%d, %d], Side: %d)", "", centre.x, centre.y, sideLength);
     }
+
+    @Override
+    public Shape[] select(int indice, Group pere) {
+        Shape[] res=null;
+        if (indice==ShapeManager.compteur){
+            res=new Shape[2];
+            res[0]=this;
+            res[1]=pere;
+        }  
+        return res;
+     }
+
+    @Override
+    void setRadius(int radius) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    int count() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    Boolean isGroup() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    Boolean remove(int[] selectedIx) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    Boolean group(int[] selectedIx, int i) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    Boolean ungroup(int[] selectedIx, int i) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
