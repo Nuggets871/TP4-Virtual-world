@@ -29,10 +29,21 @@ public class Controller_Group {
             return;
         }
 
+
         Integer[] sortedIndices = Arrays.stream(selectedIndices).boxed().toArray(Integer[]::new);
         Arrays.sort(sortedIndices, Collections.reverseOrder());
 
-        Group newGroup = data.createGroup(sortedIndices);
+        Group newGroup = new Group();
+
+        for (Integer index : sortedIndices) {
+            Shape[] selectedShapes = data.select(index - 1);
+            if (selectedShapes != null && selectedShapes[0] != null) {
+                Shape selectedShape = selectedShapes[0];
+                newGroup.add(selectedShape);
+
+                controllerRemove.control(new int[]{index});
+            }
+        }
 
         if (!newGroup.getChildren().isEmpty()) {
             data.add(newGroup);
