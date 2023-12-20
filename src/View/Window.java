@@ -6,14 +6,22 @@ package View;
 
 
 import Controller.Controller_Add;
+import Controller.Controller_Group;
+import Controller.Controller_Remove;
+import Controller.Controller_UnGroup;
+import Model.Circle;
 import Model.Group;
 import Model.Shape;
+import Model.ShapeFactory;
 import Model.ShapeManager;
 import java.awt.Color;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JColorChooser;
 import javax.swing.JTree;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -44,7 +52,12 @@ public class Window extends javax.swing.JFrame implements Observer {
         
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Empty");
         jTree_Objects.setModel(new DefaultTreeModel( root));
-
+        SpinnerNumberModel model = new SpinnerNumberModel(1.0, // valeur initiale
+                                                  0.0, // min
+                                                  100.0, // max
+                                                  1); // pas
+        jSpinnerRadius.setModel(model);
+        
         pack();
     }
 
@@ -112,6 +125,11 @@ public class Window extends javax.swing.JFrame implements Observer {
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jButton_Remove.setText("Remove");
+        jButton_Remove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_RemoveActionPerformed(evt);
+            }
+        });
 
         jButton_Group.setText("Group");
         jButton_Group.addActionListener(new java.awt.event.ActionListener() {
@@ -120,18 +138,38 @@ public class Window extends javax.swing.JFrame implements Observer {
             }
         });
 
+        jTree_Objects.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTree_ObjectsMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTree_Objects);
 
         jLabel1.setText("Properties");
 
         jButton_UnGroup.setText("UnGroup");
+        jButton_UnGroup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_UnGroupActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Center");
 
         jSpinnerPositionX.setEnabled(false);
         jSpinnerPositionX.setMinimumSize(new java.awt.Dimension(80, 22));
+        jSpinnerPositionX.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerPositionXStateChanged(evt);
+            }
+        });
 
         jSpinnerPositionY.setEnabled(false);
+        jSpinnerPositionY.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerPositionYStateChanged(evt);
+            }
+        });
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel3.setText("x");
@@ -142,6 +180,11 @@ public class Window extends javax.swing.JFrame implements Observer {
         jLabel5.setText("Radius");
 
         jSpinnerRadius.setEnabled(false);
+        jSpinnerRadius.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerRadiusStateChanged(evt);
+            }
+        });
 
         jLabel6.setText("Color");
 
@@ -299,18 +342,22 @@ public class Window extends javax.swing.JFrame implements Observer {
         
         Controller_Add ca = new Controller_Add(data);
         
-        if (jRadioCircle.isSelected())
-        {
-            ca.control("Circle", jButtonColor.getBackground());
-            
-            jTextPaneInformations.setText("Circle added");
-        }else if (jRadioRectangle.isSelected()){
-            ca.control("Rectangle",jButtonColor.getBackground());
-            jTextPaneInformations.setText("Rectangle added");
-        }else if(jRadioSquare.isSelected()){
-            ca.control("Square", jButtonColor.getBackground());
-            jTextPaneInformations.setText("Square added");
-        }
+        String shapeType = null;
+    
+    if (jRadioCircle.isSelected()) {
+        shapeType = ShapeFactory.CIRCLE;
+    } else if (jRadioSquare.isSelected()) {
+        shapeType = ShapeFactory.SQUARE;
+    } else if (jRadioRectangle.isSelected()) {
+        shapeType = ShapeFactory.RECTANGLE;
+    }
+    
+    if (shapeType != null) {
+        Color color = jButtonColor.getBackground(); 
+        ca.control(shapeType, color); 
+        updateDisplay(); 
+    }
+
     }//GEN-LAST:event_jButton_AddActionPerformed
 
     private void jButtonColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonColorActionPerformed
@@ -322,33 +369,78 @@ public class Window extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_jButtonColorActionPerformed
 
     private void jButton_GroupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_GroupActionPerformed
-        // Créer un nouveau groupe
-    Group newGroup = new Group();
+        int[] selectedIx = this.jTree_Objects.getSelectionRows();
+        
+        (new Controller_Group(data)).control(selectedIx);
+        jTextPaneInformations.setText("Objects grouped");
+    }//GEN-LAST:event_jButton_GroupActionPerformed
 
-    // Récupérer les nœuds sélectionnés dans le JTree
-    TreePath[] selectedPaths = jTree_Objects.getSelectionPaths();
-    if (selectedPaths != null) {
-        System.out.println("chemin selectionne");
-        for (TreePath path : selectedPaths) {
+    private void jButton_RemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RemoveActionPerformed
+        int[] selectedIx = this.jTree_Objects.getSelectionRows();
+        (new Controller_Remove(data)).control(selectedIx);
+        jTextPaneInformations.setText("Objects removed");
+    
+    }//GEN-LAST:event_jButton_RemoveActionPerformed
+
+    private void jButton_UnGroupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_UnGroupActionPerformed
+         int[] selectedIx = this.jTree_Objects.getSelectionRows();
+
+        (new Controller_UnGroup(data)).control(selectedIx);
+        jTextPaneInformations.setText("Objects ungrouped");
+
+        updateDisplay();
+    }//GEN-LAST:event_jButton_UnGroupActionPerformed
+
+    private void jTree_ObjectsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTree_ObjectsMouseClicked
+
+        if (evt.getClickCount() == 2) {
+        TreePath path = jTree_Objects.getPathForLocation(evt.getX(), evt.getY());
+        if (path != null) {
             DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
             Object userObject = selectedNode.getUserObject();
-
             if (userObject instanceof Shape) {
-                // Ajouter la forme au groupe
-                newGroup.add((Shape) userObject);
+                Shape shape = (Shape) userObject;
+
+                // Debug output
+                System.out.println("Selected shape: " + shape);
+                System.out.println("Current X position: " + shape.getCentre().x);
+                System.out.println("Current Y position: " + shape.getCentre().y);
+                
+                System.out.println("Setting Spinner X to: " + shape.getCentre().x);
+                System.out.println("Setting Spinner Y to: " + shape.getCentre().y);
+
+                // Set values to spinners
+                jSpinnerPositionX.setValue(shape.getCentre().x);
+                jSpinnerPositionY.setValue(shape.getCentre().y);
+
+                // More debug output
+                System.out.println("Spinner X after set: " + jSpinnerPositionX.getValue());
+                System.out.println("Spinner Y after set: " + jSpinnerPositionY.getValue());
+
+                if (shape instanceof Circle) {
+                    jSpinnerRadius.setValue(((Circle) shape).getRadius());
+                }
+                jSpinnerPositionX.setEnabled(true);
+                jSpinnerPositionY.setEnabled(true);
+                jSpinnerRadius.setEnabled(shape instanceof Circle);
             }
         }
     }
+    }//GEN-LAST:event_jTree_ObjectsMouseClicked
 
-    // Ajouter le groupe au ShapeManager
-    if (!newGroup.getChildren().isEmpty()) {
-        data.add(newGroup);
-    }
+    private void jSpinnerRadiusStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerRadiusStateChanged
+         updateSelectedShapeRadius();
+    }//GEN-LAST:event_jSpinnerRadiusStateChanged
 
-    // Mettre à jour l'affichage
-    updateDisplay();
-    
-    }//GEN-LAST:event_jButton_GroupActionPerformed
+    private void jSpinnerPositionXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerPositionXStateChanged
+        updateSelectedShapePosition();
+    }//GEN-LAST:event_jSpinnerPositionXStateChanged
+
+    private void jSpinnerPositionYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerPositionYStateChanged
+        
+        updateSelectedShapePosition();
+
+    }//GEN-LAST:event_jSpinnerPositionYStateChanged
                                           
     private void updateDisplay() {
         painter.revalidate();
@@ -383,6 +475,37 @@ public class Window extends javax.swing.JFrame implements Observer {
             j = tree.getRowCount();
         }
     }
+    private void updateSelectedShapePosition() {
+    TreePath selectedPath = jTree_Objects.getSelectionPath();
+    if (selectedPath != null) {
+        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+        Object userObject = selectedNode.getUserObject();
+        if (userObject instanceof Shape) {
+            System.out.println(jSpinnerPositionX.getValue());
+            System.out.println(jSpinnerPositionY.getValue());
+            Shape shape = (Shape) userObject;
+            int x = (Integer) jSpinnerPositionX.getValue();
+            int y = (Integer) jSpinnerPositionY.getValue();
+            shape.setCentre(new Point(x, y));
+            painter.repaint(); // Redessiner le composant graphique
+        }
+    }
+}
+
+    private void updateSelectedShapeRadius() {
+        TreePath selectedPath = jTree_Objects.getSelectionPath();
+        if (selectedPath != null) {
+            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+            Object userObject = selectedNode.getUserObject();
+            if (userObject instanceof Circle) {
+                Circle circle = (Circle) userObject;
+                double radius = (Double) jSpinnerRadius.getValue();
+                circle.setRadius(radius);
+                painter.repaint(); // Redessiner le composant graphique
+            }
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButtonColor;

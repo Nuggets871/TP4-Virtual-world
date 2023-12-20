@@ -17,55 +17,118 @@ import javax.swing.tree.DefaultTreeModel;
  * @author adrien.peytavie
  */
 public class ShapeManager extends Observable {
+    Shape root;
+    Shape selected;
+    public static int compteur = 0;
 
-    ArrayList<Shape> shapes;
-    
-    public ShapeManager()
-    {
-        shapes = new ArrayList<>();
+    public ShapeManager() {
+        root = null;
+        selected = null;
     }
+
     
     public void init() {
-    Group g1 = new Group(new Point(0, 0), Color.BLACK); // Point et couleur pour le groupe
-    add(g1);
-    g1.add(new Circle(new Point(200, 100), Color.BLUE));
-    g1.add(new Square(new Point(400, 200), Color.RED));
+    Group rootGroup = new Group();
 
-    Group g2 = new Group(new Point(0, 0), Color.BLACK); // Un autre groupe
-    g2.add(new Square(new Point(100, 300), Color.YELLOW));
-    g2.add(new Square(new Point(100, 200), Color.GREEN));
-    add(g2);
+    Group group1 = new Group();
+    Group group2 = new Group();
 
-    add(new Circle(new Point(20, 200), Color.MAGENTA));
+    group1.add(new Circle(new Point(200, 100), Color.BLUE));
+    group1.add(new Square(new Point(400, 200), Color.RED));
+
+    group2.add(new Square(new Point(100, 300), Color.YELLOW));
+    group2.add(new Square(new Point(100, 200), Color.GREEN));
+
+    rootGroup.add(group1);
+    rootGroup.add(group2);
+    rootGroup.add(new Circle(new Point(20, 200), Color.MAGENTA));
+
+    add(rootGroup);
 }
-
-
     
     public void add(Shape shape)
     {
-        shapes.add(shape);
-
-        setChanged();
+        if(root == null){
+            root = shape;
+            setChanged();
+            
+            
+        }
+        else if(root instanceof Group ){
+            ((Group)root).add(shape);
+            setChanged();
+        }
+        else{
+            Group group = new Group();
+            group.add(root);
+            group.add(shape);
+            
+            root = group;
+            setChanged();
+        }
+       
         notifyObservers();
+         
+    }
+    
+    public Shape[] select(int indice) {
+        compteur = 0;
+        
+        Shape[] res = new Shape[2];
+        
+        if(indice == 0) {
+            res[0] = root;
+            res[1] = null;
+            return res;
+        }
+        else if (root instanceof Group) {
+            res = root.select(indice, (Group)root);
+        }
+        return res;
     }
 
-    @Override
-    public String toString() {
-        return "Data{\n" + "  shape{\n" + shapes.toString() + "  }\n}";
+    public String toString(int padding) {
+        return root.toString(padding);
     }
 
     public void draw(Graphics graphics) {
-        for (Shape shape : shapes)
-            shape.draw(graphics);
+    if (root != null) {
+        root.draw(graphics);
     }
-    
+}
+
+
     public DefaultTreeModel getTreeModel() {
-        
-        DefaultMutableTreeNode treeNode = new DefaultMutableTreeNode("Circles");
-        
-        for (Shape shape : shapes)
-            treeNode.add(shape.getJTreeNodes());
-        
+        DefaultMutableTreeNode treeNode = new DefaultMutableTreeNode("Group");
+        treeNode.add(root.getJTreeNodes());
         return new DefaultTreeModel(treeNode);
     }
+
+    public boolean remove(int indice) {
+        if (indice < 0 || root == null) {
+            return false; // Indice invalide ou arbre vide
+        }
+
+        if (indice == 0) {
+            // Ne pas supprimer la racine
+            return false;
+        }
+
+        Shape[] selectedShapes = select(indice);
+        Shape shapeToRemove = selectedShapes[0];
+        Group parentGroup = (Group) selectedShapes[1];
+
+        if (shapeToRemove != null && parentGroup != null) {
+            // Supprimer la forme du groupe parent
+            parentGroup.getChildren().remove(shapeToRemove);
+            setChanged();
+            notifyObservers();
+            return true;
+        }
+
+        return false;
+    }
+
+    
+    
 }

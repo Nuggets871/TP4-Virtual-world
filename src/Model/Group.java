@@ -1,4 +1,4 @@
-/*
+ /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
@@ -106,6 +106,59 @@ public DefaultMutableTreeNode getJTreeNodes() {
             sb.append(child.toString(padding + 2)).append("\n"); // Ajouter de l'indentation pour les enfants.
         }
         return sb.toString();
+    }
+
+    @Override
+    public Shape[] select(int indice, Group pere) {
+        Shape[] res=null;
+        if (indice==ShapeManager.compteur){
+            res=new Shape[2];
+            res[0]=this;
+            res[1]=pere;
+            return res;
+        }
+        else { //group est le nom de l'attribut arraylist
+            for (int k = 0; k < children.size(); k++) {
+                Shape _shape = children.get(k);
+                ShapeManager.compteur++;
+                res=_shape.select(indice,this);
+                if (res!=null)    
+                    return res;
+            }
+
+
+        }
+        return null;
+    }
+
+    @Override
+    void setRadius(int radius) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    int count() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    Boolean isGroup() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    Boolean remove(int[] selectedIx) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    Boolean group(int[] selectedIx, int i) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    Boolean ungroup(int[] selectedIx, int i) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

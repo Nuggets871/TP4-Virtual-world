@@ -24,6 +24,7 @@ public abstract class Shape {
     }
 
     public Point getCentre() {
+        System.out.println(centre);
         return centre;
     }
 
@@ -42,5 +43,18 @@ public abstract class Shape {
     public abstract void draw(Graphics g);
     
     public abstract String toString(int padding);
+    public abstract Shape[] select(int indice,Group pere);
+    public void setCentre(Point newCentre) {
+        this.centre = newCentre;
+    }
+    
+    abstract void setRadius (int radius);
+    abstract int count();
+    abstract Boolean isGroup();
+    abstract Boolean remove(int[] selectedIx);
+    abstract Boolean group(int[] selectedIx,int i);
+    abstract Boolean ungroup (int[] selectedIx, int i);
+    
 }
 
+    
