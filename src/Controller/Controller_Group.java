@@ -7,6 +7,8 @@ package Controller;
 import Model.Group;
 import Model.Shape;
 import Model.ShapeManager;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  *
@@ -27,22 +29,11 @@ public class Controller_Group {
             return;
         }
 
-        Group newGroup = new Group();
+        Integer[] sortedIndices = Arrays.stream(selectedIndices).boxed().toArray(Integer[]::new);
+        Arrays.sort(sortedIndices, Collections.reverseOrder());
 
-        for (int index : selectedIndices) {
-            Shape[] selectedShapes = data.select(index - 1);
-            if (selectedShapes != null && selectedShapes[0] != null) {
-                Shape selectedShape = selectedShapes[0];
+        Group newGroup = data.createGroup(sortedIndices);
 
-                // Ajouter la forme au nouveau groupe
-                newGroup.add(selectedShape);
-
-                // Utiliser Controller_Remove pour retirer la forme de son emplacement actuel
-                controllerRemove.control(new int[]{index});
-            }
-        }
-
-        // Ajouter le nouveau groupe au ShapeManager si ce n'est pas vide
         if (!newGroup.getChildren().isEmpty()) {
             data.add(newGroup);
         }

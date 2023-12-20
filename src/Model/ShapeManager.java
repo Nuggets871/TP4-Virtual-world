@@ -96,7 +96,25 @@ public class ShapeManager extends Observable {
         root.draw(graphics);
     }
 }
-
+    public void notifyShapeChanged() {
+        setChanged();
+        notifyObservers();
+    }
+    
+    public Group createGroup(int[] selectedIndices) {
+        Group newGroup = new Group();
+        
+        for (int index : selectedIndices) {
+            Shape[] selectedShapes = select(index - 1);
+            if (selectedShapes != null && selectedShapes[0] != null) {
+                Shape selectedShape = selectedShapes[0];
+                newGroup.add(selectedShape);
+                remove(index);
+            }
+        }
+        
+        return newGroup;
+    }
 
     public DefaultTreeModel getTreeModel() {
         DefaultMutableTreeNode treeNode = new DefaultMutableTreeNode("Group");

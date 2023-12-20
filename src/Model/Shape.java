@@ -24,7 +24,6 @@ public abstract class Shape {
     }
 
     public Point getCentre() {
-        System.out.println(centre);
         return centre;
     }
 

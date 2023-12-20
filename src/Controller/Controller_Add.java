@@ -30,7 +30,6 @@ public class Controller_Add {
     public void control(String shapeType, Color color) {
         Random rand = new Random();
         Point centre = new Point(rand.nextInt(400), rand.nextInt(400));
-        
         Shape shape = factory.createShape(shapeType, centre, color);
         data.add(shape);
     }

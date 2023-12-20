@@ -20,13 +20,12 @@ public class Controller_UnGroup {
     }
 
     public void control(int[] selectedIndices) {
-        // Assurez-vous que les indices sélectionnés ne sont pas vides
         if (selectedIndices == null || selectedIndices.length == 0) {
             return;
         }
 
         for (int index : selectedIndices) {
-            Shape[] selectedShapes = data.select(index - 1); // Ajuster l'index si nécessaire
+            Shape[] selectedShapes = data.select(index - 1); 
             if (selectedShapes != null && selectedShapes.length == 2) {
                 Shape selectedShape = selectedShapes[0];
                 Group parentGroup = (Group) selectedShapes[1];
@@ -34,13 +33,10 @@ public class Controller_UnGroup {
                 if (parentGroup != null && selectedShape instanceof Group) {
                     Group groupToUngroup = (Group) selectedShape;
 
-                    // Logique de dégroupement
-                    // Par exemple, retirer chaque enfant du groupe et l'ajouter au niveau supérieur
                     for (Shape child : groupToUngroup.getChildren()) {
                         parentGroup.add(child);
                     }
 
-                    // Retirer le groupe de son parent
                     parentGroup.getChildren().remove(groupToUngroup);
                 }
             }

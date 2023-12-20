@@ -8,7 +8,10 @@ package View;
 import Controller.Controller_Add;
 import Controller.Controller_Group;
 import Controller.Controller_Remove;
+import Controller.Controller_Select;
 import Controller.Controller_UnGroup;
+import Controller.Controller_UpdatePosition;
+import Controller.Controller_UpdateRadius;
 import Model.Circle;
 import Model.Group;
 import Model.Shape;
@@ -392,44 +395,25 @@ public class Window extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_jButton_UnGroupActionPerformed
 
     private void jTree_ObjectsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTree_ObjectsMouseClicked
-
         if (evt.getClickCount() == 2) {
         TreePath path = jTree_Objects.getPathForLocation(evt.getX(), evt.getY());
         if (path != null) {
             DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
-            Object userObject = selectedNode.getUserObject();
-            if (userObject instanceof Shape) {
-                Shape shape = (Shape) userObject;
-
-                // Debug output
-                System.out.println("Selected shape: " + shape);
-                System.out.println("Current X position: " + shape.getCentre().x);
-                System.out.println("Current Y position: " + shape.getCentre().y);
-                
-                System.out.println("Setting Spinner X to: " + shape.getCentre().x);
-                System.out.println("Setting Spinner Y to: " + shape.getCentre().y);
-
-                // Set values to spinners
-                jSpinnerPositionX.setValue(shape.getCentre().x);
-                jSpinnerPositionY.setValue(shape.getCentre().y);
-
-                // More debug output
-                System.out.println("Spinner X after set: " + jSpinnerPositionX.getValue());
-                System.out.println("Spinner Y after set: " + jSpinnerPositionY.getValue());
-
-                if (shape instanceof Circle) {
-                    jSpinnerRadius.setValue(((Circle) shape).getRadius());
-                }
-                jSpinnerPositionX.setEnabled(true);
-                jSpinnerPositionY.setEnabled(true);
-                jSpinnerRadius.setEnabled(shape instanceof Circle);
-            }
+            int selectedIndex = jTree_Objects.getRowForPath(path) - 1; 
+            new Controller_Select(data, this).control(selectedIndex);
         }
     }
+ 
     }//GEN-LAST:event_jTree_ObjectsMouseClicked
 
     private void jSpinnerRadiusStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerRadiusStateChanged
-         updateSelectedShapeRadius();
+        if (jTree_Objects.getSelectionPath() != null) {
+            int selectedIndex = jTree_Objects.getMinSelectionRow();
+            if (selectedIndex >= 0) {
+                double newRadius = (Double) jSpinnerRadius.getValue();
+                new Controller_UpdateRadius(data).control(selectedIndex - 1, newRadius); // Ajuster l'index si nécessaire
+            }
+        }
     }//GEN-LAST:event_jSpinnerRadiusStateChanged
 
     private void jSpinnerPositionXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerPositionXStateChanged
@@ -437,7 +421,6 @@ public class Window extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_jSpinnerPositionXStateChanged
 
     private void jSpinnerPositionYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerPositionYStateChanged
-        
         updateSelectedShapePosition();
 
     }//GEN-LAST:event_jSpinnerPositionYStateChanged
@@ -465,6 +448,38 @@ public class Window extends javax.swing.JFrame implements Observer {
         jSpinnerRadius.setEnabled(false);
 
     }
+    public void updateUI(Shape shape) {
+        jSpinnerPositionX.setValue(shape.getCentre().x);
+        jSpinnerPositionY.setValue(shape.getCentre().y);
+        jSpinnerPositionX.setEnabled(true);
+        jSpinnerPositionY.setEnabled(true);
+
+        if (shape instanceof Circle) {
+            Circle circle = (Circle) shape;
+            jSpinnerRadius.setValue(circle.getRadius());
+            jSpinnerRadius.setEnabled(true);
+            painter.repaint();
+        } else {
+            jSpinnerRadius.setEnabled(false);
+        }
+
+        jButtonColor.setBackground(shape.getColor());
+        jTextPaneInformations.setText("Selected Shape: " + shape.toString());
+        painter.repaint();
+    }
+    private void updateSelectedShapePosition() {
+        TreePath selectedPath = jTree_Objects.getSelectionPath();
+        if (selectedPath != null) {
+            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+            int selectedIndex = jTree_Objects.getMinSelectionRow() - 1; // Ajuster si nécessaire
+            if (selectedIndex >= 0) {
+                int newX = (Integer) jSpinnerPositionX.getValue();
+                int newY = (Integer) jSpinnerPositionY.getValue();
+                new Controller_UpdatePosition(data).control(selectedIndex, newX, newY);
+            }
+        }
+    }
+
     
     private void expandAllNodes(JTree tree) {
         int j = tree.getRowCount();
@@ -475,36 +490,7 @@ public class Window extends javax.swing.JFrame implements Observer {
             j = tree.getRowCount();
         }
     }
-    private void updateSelectedShapePosition() {
-    TreePath selectedPath = jTree_Objects.getSelectionPath();
-    if (selectedPath != null) {
-        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
-        Object userObject = selectedNode.getUserObject();
-        if (userObject instanceof Shape) {
-            System.out.println(jSpinnerPositionX.getValue());
-            System.out.println(jSpinnerPositionY.getValue());
-            Shape shape = (Shape) userObject;
-            int x = (Integer) jSpinnerPositionX.getValue();
-            int y = (Integer) jSpinnerPositionY.getValue();
-            shape.setCentre(new Point(x, y));
-            painter.repaint(); // Redessiner le composant graphique
-        }
-    }
-}
 
-    private void updateSelectedShapeRadius() {
-        TreePath selectedPath = jTree_Objects.getSelectionPath();
-        if (selectedPath != null) {
-            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
-            Object userObject = selectedNode.getUserObject();
-            if (userObject instanceof Circle) {
-                Circle circle = (Circle) userObject;
-                double radius = (Double) jSpinnerRadius.getValue();
-                circle.setRadius(radius);
-                painter.repaint(); // Redessiner le composant graphique
-            }
-        }
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;

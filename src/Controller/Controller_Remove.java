@@ -7,6 +7,8 @@ package Controller;
 import Model.Group;
 import Model.Shape;
 import Model.ShapeManager;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  *
@@ -23,18 +25,14 @@ public class Controller_Remove {
         if (selectedIndices == null || selectedIndices.length == 0) {
             return;
         }
-
-        // Parcourez chaque indice sélectionné pour le supprimer
-        for (int index : selectedIndices) {
-            // Supprimer chaque élément sélectionné
-            // L'ajustement de l'indice peut être nécessaire en fonction de la façon dont votre JTree est structuré
+        
+        Integer[] sortedIndices = Arrays.stream(selectedIndices).boxed().toArray(Integer[]::new);
+        Arrays.sort(sortedIndices, Collections.reverseOrder());
+      
+        for (Integer index : sortedIndices) {
             boolean isRemoved = data.remove(index - 1); 
-
-            if (!isRemoved) {
-                // Gérer les cas où la suppression échoue, si nécessaire
-            }
         }
 
-        // Mise à jour de l'affichage, si nécessaire
+       
     }
 }
